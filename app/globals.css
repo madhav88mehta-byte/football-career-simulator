@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
-:root { --bg:#080b10; --panel:#10151d; --panel-2:#151b24; --line:#27303c; --text:#f4f7fb; --muted:#8e99a8; --green:#b7ff39; --green-dark:#6ea719; }
+:root { --bg:#070a0e; --panel:#0e1319; --panel2:#151b22; --line:#27303c; --text:#f5f7fa; --muted:#7f8995; --green:#b7ff39; }
 * { box-sizing:border-box; }
 html,body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:Arial, Helvetica, sans-serif; }
-body { background-image:radial-gradient(circle at 80% 0%, rgba(183,255,57,.08), transparent 28%), linear-gradient(180deg,#080b10 0%,#0b0f15 100%); }
-button { font:inherit; }
+body { background-image:radial-gradient(circle at 78% 12%,rgba(183,255,57,.07),transparent 24%),linear-gradient(180deg,#070a0e 0%,#0a0e13 100%); }
+button,input,select { font:inherit; }
+button { cursor:pointer; }
+button:disabled { cursor:not-allowed; }
 ::selection { background:var(--green); color:#071000; }
+.input { width:100%; border:1px solid #2b3540; border-radius:12px; background:#151b22; color:#f5f7fa; padding:14px 15px; outline:none; transition:.2s; }
+.input::placeholder { color:#5f6a76; }
+.input:focus { border-color:#b7ff39; box-shadow:0 0 0 3px rgba(183,255,57,.08); }
+select.input { appearance:auto; }
