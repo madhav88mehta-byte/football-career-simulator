@@ -2,92 +2,68 @@
 
 import { useState } from "react";
 
-const fixtures = [
-  ["SAT 15 AUG", "Riverside FC", "HOME", "19:45"],
-  ["WED 19 AUG", "Northbridge United", "AWAY", "20:00"],
-  ["SUN 23 AUG", "Kingsport City", "HOME", "16:30"],
-];
+type Club = { name: string; short: string; country: string; league: string; rating: number; budget: string; level: string; color: string };
 
-const squad = [
-  { name: "Ethan Cole", pos: "ST", ovr: 82, age: 24, form: "+3" },
-  { name: "Luca Moretti", pos: "CAM", ovr: 85, age: 22, form: "+5" },
-  { name: "Daniel Okafor", pos: "RW", ovr: 79, age: 21, form: "+2" },
-  { name: "Mateo Silva", pos: "CM", ovr: 83, age: 27, form: "0" },
-  { name: "Noah Bennett", pos: "CB", ovr: 81, age: 25, form: "+1" },
+const clubs: Club[] = [
+  { name: "Manchester United", short: "MUN", country: "England", league: "Premier League", rating: 84, budget: "€185M", level: "Elite", color: "#da291c" },
+  { name: "Arsenal", short: "ARS", country: "England", league: "Premier League", rating: 86, budget: "€142M", level: "Elite", color: "#ef0107" },
+  { name: "Chelsea", short: "CHE", country: "England", league: "Premier League", rating: 82, budget: "€165M", level: "Elite", color: "#034694" },
+  { name: "Real Madrid", short: "RMA", country: "Spain", league: "La Liga", rating: 90, budget: "€310M", level: "Superstar", color: "#f4f4f4" },
+  { name: "Barcelona", short: "FCB", country: "Spain", league: "La Liga", rating: 87, budget: "€125M", level: "Elite", color: "#a50044" },
+  { name: "Bayern Munich", short: "BAY", country: "Germany", league: "Bundesliga", rating: 89, budget: "€205M", level: "Elite", color: "#dc052d" },
+  { name: "Inter Milan", short: "INT", country: "Italy", league: "Serie A", rating: 86, budget: "€118M", level: "Elite", color: "#0068a8" },
+  { name: "Paris SG", short: "PSG", country: "France", league: "Ligue 1", rating: 88, budget: "€245M", level: "Superstar", color: "#004170" },
 ];
 
 export default function Home() {
-  const [active, setActive] = useState("Overview");
-  const [notice, setNotice] = useState("");
+  const [screen, setScreen] = useState<"menu" | "manager" | "club" | "career">("menu");
+  const [manager, setManager] = useState("");
+  const [club, setClub] = useState<Club | null>(null);
+  const [country, setCountry] = useState("India");
+  const [difficulty, setDifficulty] = useState("Professional");
 
-  const nav = ["Overview", "Squad", "Transfers", "Fixtures", "League", "Training", "Youth", "Finances"];
-  const action = (text: string) => { setNotice(text); setTimeout(() => setNotice(""), 2600); };
-
-  return (
-    <main className="min-h-screen bg-[#080b10]">
-      <header className="sticky top-0 z-20 border-b border-[#27303c] bg-[#080b10]/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[1500px] items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-[#b7ff39] text-xl font-black text-black">FC</div>
-            <div><p className="text-xs font-bold tracking-[.28em] text-[#b7ff39]">CAREER MODE</p><h1 className="text-lg font-black tracking-tight">FOOTBALL SIMULATOR</h1></div>
-          </div>
-          <div className="hidden items-center gap-8 md:flex">
-            <div><p className="text-[10px] uppercase tracking-widest text-[#8e99a8]">Season</p><p className="font-bold">2026 / 27</p></div>
-            <div><p className="text-[10px] uppercase tracking-widest text-[#8e99a8]">Budget</p><p className="font-bold text-[#b7ff39]">€86.4M</p></div>
-            <div><p className="text-[10px] uppercase tracking-widest text-[#8e99a8]">Board confidence</p><p className="font-bold">78%</p></div>
-            <button onClick={() => action("Career autosaved successfully.")} className="rounded-lg border border-[#27303c] px-4 py-2 text-sm font-bold hover:border-[#b7ff39]">SAVE CAREER</button>
-          </div>
-        </div>
-      </header>
-
-      <div className="mx-auto flex max-w-[1500px]">
-        <aside className="hidden w-56 shrink-0 border-r border-[#27303c] px-4 py-6 lg:block">
-          <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[.25em] text-[#667281]">Management</p>
-          <nav className="space-y-1">
-            {nav.map(item => <button key={item} onClick={() => setActive(item)} className={`w-full rounded-lg px-3 py-3 text-left text-sm font-bold transition ${active===item ? "bg-[#b7ff39] text-black" : "text-[#aab3bf] hover:bg-[#151b24] hover:text-white"}`}>{item}</button>)}
-          </nav>
-          <div className="mt-10 rounded-xl border border-[#27303c] bg-[#10151d] p-4">
-            <p className="text-xs font-bold text-[#8e99a8]">NEXT BOARD REVIEW</p><p className="mt-1 font-black">In 14 days</p><div className="mt-3 h-1.5 overflow-hidden rounded bg-[#27303c]"><div className="h-full w-[78%] bg-[#b7ff39]" /></div><p className="mt-2 text-xs text-[#8e99a8]">Keep winning to improve confidence.</p>
-          </div>
-        </aside>
-
-        <section className="min-w-0 flex-1 px-5 py-7 md:px-8">
-          <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-            <div><p className="text-sm font-bold text-[#b7ff39]">MONDAY, 10 AUGUST 2026</p><h2 className="mt-1 text-4xl font-black tracking-tight md:text-5xl">RIVERSIDE FC</h2><p className="mt-2 text-[#8e99a8]">Manager: <span className="text-white">Madhav</span> · Premier Division · Position <span className="text-white">4th</span></p></div>
-            <button onClick={() => action("Advancing to the next matchday…")} className="rounded-xl bg-[#b7ff39] px-6 py-3 font-black text-black shadow-[0_0_30px_rgba(183,255,57,.12)] hover:bg-white">NEXT MATCHDAY →</button>
-          </div>
-
-          {notice && <div className="mb-5 rounded-xl border border-[#b7ff39]/40 bg-[#b7ff39]/10 px-4 py-3 text-sm font-bold text-[#b7ff39]">✓ {notice}</div>}
-
-          <div className="grid gap-5 xl:grid-cols-[1.4fr_.8fr_.8fr]">
-            <div className="rounded-2xl border border-[#27303c] bg-[#10151d] p-6">
-              <div className="flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-widest text-[#8e99a8]">Next fixture</p><h3 className="mt-1 text-2xl font-black">Riverside FC <span className="text-[#667281]">vs</span> Northbridge United</h3></div><span className="rounded-full bg-[#151b24] px-3 py-1 text-xs font-bold text-[#b7ff39]">HOME</span></div>
-              <div className="my-7 grid grid-cols-3 items-center text-center"><div><div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-[#18210f] text-2xl font-black text-[#b7ff39]">RF</div><p className="mt-2 font-bold">Riverside FC</p></div><div><p className="text-xs uppercase tracking-widest text-[#8e99a8]">Saturday</p><p className="text-3xl font-black">19:45</p><p className="text-xs text-[#8e99a8]">15 Aug</p></div><div><div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-[#222733] text-2xl font-black">NU</div><p className="mt-2 font-bold">Northbridge</p></div></div>
-              <div className="grid grid-cols-3 gap-2 border-t border-[#27303c] pt-5 text-center"><div><p className="text-xs text-[#8e99a8]">FORM</p><p className="font-black">W W D W W</p></div><div><p className="text-xs text-[#8e99a8]">TACTIC</p><p className="font-black">4-3-3</p></div><div><p className="text-xs text-[#8e99a8]">CHEMISTRY</p><p className="font-black text-[#b7ff39]">91%</p></div></div>
-            </div>
-
-            <Stat title="LEAGUE POSITION" value="4th" sub="+2 places" accent />
-            <Stat title="TEAM RATING" value="83" sub="↑ 1 this month" />
-          </div>
-
-          <div className="mt-5 grid gap-5 xl:grid-cols-[1.1fr_.9fr]">
-            <div className="rounded-2xl border border-[#27303c] bg-[#10151d] p-6">
-              <div className="mb-5 flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-widest text-[#8e99a8]">Squad snapshot</p><h3 className="text-xl font-black">First team</h3></div><button onClick={() => setActive("Squad")} className="text-xs font-bold text-[#b7ff39]">VIEW SQUAD →</button></div>
-              <div className="space-y-2">{squad.map((p,i)=><div key={p.name} className="flex items-center justify-between rounded-xl bg-[#151b24] px-4 py-3"><div className="flex items-center gap-3"><span className="w-5 text-xs text-[#667281]">{i+1}</span><div className="grid h-9 w-9 place-items-center rounded-full bg-[#222a34] text-xs font-black">{p.pos}</div><div><p className="text-sm font-bold">{p.name}</p><p className="text-xs text-[#8e99a8]">{p.age} yrs · {p.pos}</p></div></div><div className="flex items-center gap-6"><span className="text-xs font-bold text-[#b7ff39]">{p.form}</span><span className="text-lg font-black">{p.ovr}</span></div></div>)}</div>
-            </div>
-            <div className="rounded-2xl border border-[#27303c] bg-[#10151d] p-6"><div className="mb-5 flex items-center justify-between"><div><p className="text-xs font-bold uppercase tracking-widest text-[#8e99a8]">Schedule</p><h3 className="text-xl font-black">Upcoming fixtures</h3></div><button onClick={() => setActive("Fixtures")} className="text-xs font-bold text-[#b7ff39]">FULL CALENDAR →</button></div><div className="space-y-3">{fixtures.map((f,i)=><div key={f[0]} className="flex items-center justify-between border-b border-[#27303c] pb-3 last:border-0"><div><p className="text-[10px] font-bold tracking-widest text-[#8e99a8]">{f[0]}</p><p className="mt-1 font-bold">{f[1]}</p></div><div className="text-right"><p className="text-xs font-bold text-[#b7ff39]">{f[2]}</p><p className="text-sm font-black">{f[3]}</p></div></div>)}</div></div>
-          </div>
-
-          <div className="mt-5 grid gap-5 md:grid-cols-3">
-            <ActionCard icon="↗" title="TRANSFER MARKET" text="3 shortlisted players" onClick={() => setActive("Transfers")} />
-            <ActionCard icon="◎" title="TRAINING" text="Session ready · 4 drills" onClick={() => setActive("Training")} />
-            <ActionCard icon="★" title="YOUTH ACADEMY" text="2 prospects promoted" onClick={() => setActive("Youth")} />
-          </div>
-        </section>
-      </div>
-    </main>
-  );
+  if (screen === "menu") return <MainMenu onNew={() => setScreen("manager")} />;
+  if (screen === "manager") return <ManagerSetup manager={manager} setManager={setManager} country={country} setCountry={setCountry} difficulty={difficulty} setDifficulty={setDifficulty} onBack={() => setScreen("menu")} onNext={() => manager.trim() && setScreen("club")} />;
+  if (screen === "club") return <ClubSelect selected={club} setSelected={setClub} onBack={() => setScreen("manager")} onStart={() => club && setScreen("career")} />;
+  return <CareerPreview manager={manager} club={club!} difficulty={difficulty} onMenu={() => setScreen("menu")} />;
 }
 
-function Stat({title,value,sub,accent=false}:{title:string,value:string,sub:string,accent?:boolean}) { return <div className="rounded-2xl border border-[#27303c] bg-[#10151d] p-6"><p className="text-xs font-bold tracking-widest text-[#8e99a8]">{title}</p><p className={`mt-5 text-5xl font-black ${accent?"text-[#b7ff39]":""}`}>{value}</p><p className="mt-2 text-xs font-bold text-[#8e99a8]">{sub}</p></div> }
-function ActionCard({icon,title,text,onClick}:{icon:string,title:string,text:string,onClick:()=>void}) { return <button onClick={onClick} className="group rounded-2xl border border-[#27303c] bg-[#10151d] p-5 text-left transition hover:-translate-y-0.5 hover:border-[#b7ff39]/60"><div className="flex items-center justify-between"><span className="grid h-9 w-9 place-items-center rounded-lg bg-[#151b24] text-lg text-[#b7ff39]">{icon}</span><span className="text-[#667281] group-hover:text-[#b7ff39]">→</span></div><p className="mt-5 text-xs font-bold tracking-widest text-[#8e99a8]">{title}</p><p className="mt-1 font-bold">{text}</p></button> }
+function Shell({ children }: { children: React.ReactNode }) {
+  return <main className="min-h-screen overflow-hidden bg-[#070a0e] text-white">{children}</main>;
+}
+
+function MainMenu({ onNew }: { onNew: () => void }) {
+  return <Shell><div className="relative min-h-screen flex items-center">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_45%,rgba(183,255,57,.15),transparent_25%),linear-gradient(115deg,#070a0e_25%,#0d1410_70%,#17200e)]" />
+    <div className="absolute right-[-10%] top-[-10%] h-[850px] w-[850px] rounded-full border border-[#b7ff39]/10" />
+    <div className="absolute right-[8%] top-[18%] h-[520px] w-[520px] rounded-full border border-[#b7ff39]/10" />
+    <div className="relative z-10 w-full px-8 py-12 md:px-20 lg:px-32">
+      <div className="max-w-3xl">
+        <div className="mb-8 flex items-center gap-3"><div className="grid h-12 w-12 place-items-center rounded-xl bg-[#b7ff39] font-black text-black">FC</div><span className="text-sm font-black tracking-[.35em] text-[#b7ff39]">CAREER MODE</span></div>
+        <p className="text-sm font-bold uppercase tracking-[.45em] text-[#7f8995]">THE BEAUTIFUL GAME. YOUR WAY.</p>
+        <h1 className="mt-3 text-6xl font-black leading-[.88] tracking-[-.06em] md:text-8xl">FOOTBALL<br/><span className="text-[#b7ff39]">CAREER</span></h1>
+        <p className="mt-8 max-w-xl text-base leading-7 text-[#a3adb8]">Build a club. Shape a squad. Make the decisions. Start as a manager and write your own football story across seasons.</p>
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row"><button onClick={onNew} className="rounded-xl bg-[#b7ff39] px-8 py-4 text-sm font-black text-black transition hover:scale-[1.02]">NEW CAREER <span className="ml-8">→</span></button><button className="rounded-xl border border-[#303944] bg-white/[.03] px-8 py-4 text-sm font-black text-[#9ba5b0]">CONTINUE CAREER <span className="ml-5">LOCKED</span></button></div>
+        <div className="mt-16 grid max-w-xl grid-cols-3 gap-8 border-t border-[#26303a] pt-6"><MiniStat n="01" t="BUILD"/><MiniStat n="02" t="MANAGE"/><MiniStat n="03" t="CONQUER"/></div>
+      </div>
+    </div>
+  </div></Shell>;
+}
+
+function MiniStat({ n, t }: { n: string; t: string }) { return <div><p className="text-xs font-black text-[#b7ff39]">{n}</p><p className="mt-1 text-xs font-bold tracking-[.22em] text-[#6f7985]">{t}</p></div>; }
+
+function ManagerSetup({ manager, setManager, country, setCountry, difficulty, setDifficulty, onBack, onNext }: any) {
+  return <Shell><div className="mx-auto min-h-screen max-w-6xl px-6 py-8 md:px-10"><TopBar step="01 / 02" title="CREATE YOUR MANAGER" onBack={onBack}/><div className="grid gap-8 pt-10 lg:grid-cols-[1.15fr_.85fr]"><div className="rounded-3xl border border-[#27303c] bg-[#0e1319] p-7 md:p-10"><p className="text-xs font-black tracking-[.3em] text-[#b7ff39]">MANAGER PROFILE</p><h2 className="mt-2 text-3xl font-black">Who are you?</h2><div className="mt-8 space-y-6"><Field label="MANAGER NAME"><input value={manager} onChange={e=>setManager(e.target.value)} placeholder="Enter your name" className="input" /></Field><Field label="NATIONALITY"><select value={country} onChange={e=>setCountry(e.target.value)} className="input"><option>India</option><option>England</option><option>Spain</option><option>Germany</option><option>Brazil</option><option>Argentina</option><option>France</option></select></Field><Field label="DIFFICULTY"><div className="grid grid-cols-3 gap-2">{["Amateur","Professional","World Class"].map(x=><button key={x} onClick={()=>setDifficulty(x)} className={`rounded-xl border px-3 py-3 text-sm font-bold ${difficulty===x?"border-[#b7ff39] bg-[#b7ff39] text-black":"border-[#27303c] bg-[#151a21] text-[#929da8]"}`}>{x}</button>)}</div></Field></div><button disabled={!manager.trim()} onClick={onNext} className="mt-10 w-full rounded-xl bg-[#b7ff39] py-4 font-black text-black disabled:cursor-not-allowed disabled:opacity-30">CHOOSE YOUR CLUB →</button></div><div className="relative overflow-hidden rounded-3xl border border-[#27303c] bg-[#151a13] p-8"><div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[#b7ff39]/10 blur-3xl"/><p className="relative text-xs font-black tracking-[.3em] text-[#78838e]">CAREER PROFILE</p><div className="relative mt-12 grid h-44 place-items-center rounded-2xl border border-[#344027] bg-[#0c110b]"><div className="grid h-28 w-28 place-items-center rounded-full border-2 border-[#b7ff39] bg-[#151d0e] text-4xl font-black text-[#b7ff39]">{manager ? manager.slice(0,2).toUpperCase() : "??"}</div></div><div className="relative mt-6"><p className="text-2xl font-black">{manager || "YOUR MANAGER"}</p><p className="mt-1 text-sm text-[#7e8994]">{country} · {difficulty}</p></div></div></div></div></Shell>;
+}
+
+function ClubSelect({ selected, setSelected, onBack, onStart }: any) {
+  return <Shell><div className="mx-auto min-h-screen max-w-[1400px] px-6 py-8 md:px-10"><TopBar step="02 / 02" title="CHOOSE YOUR CLUB" onBack={onBack}/><div className="mt-8 grid gap-5 lg:grid-cols-[1fr_330px]"><div><div className="mb-5 flex items-end justify-between"><div><p className="text-xs font-black tracking-[.3em] text-[#b7ff39]">SELECT DESTINATION</p><p className="mt-1 text-[#7f8995]">Every club creates a different career.</p></div><span className="text-xs font-bold text-[#66717c]">{clubs.length} CLUBS</span></div><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{clubs.map(c=><button key={c.name} onClick={()=>setSelected(c)} className={`group relative overflow-hidden rounded-2xl border p-5 text-left transition ${selected?.name===c.name?"border-[#b7ff39] bg-[#151c11]":"border-[#27303c] bg-[#0e1319] hover:border-[#56616d]"}`}><div className="absolute right-0 top-0 h-20 w-20 rounded-full opacity-10 blur-2xl" style={{background:c.color}}/><div className="flex items-start justify-between"><div className="grid h-14 w-14 place-items-center rounded-2xl border border-white/10 bg-[#181e26] text-sm font-black" style={{color:c.color==="#f4f4f4"?"#fff":c.color}}>{c.short}</div><span className="rounded-full bg-[#171d25] px-2 py-1 text-[9px] font-black uppercase tracking-wider text-[#7e8994]">{c.level}</span></div><p className="mt-5 font-black">{c.name}</p><p className="mt-1 text-xs text-[#6f7a86]">{c.country} · {c.league}</p><div className="mt-5 flex justify-between border-t border-[#27303c] pt-4"><span><b className="text-lg">{c.rating}</b><small className="ml-1 text-[9px] text-[#707b87]">OVR</small></span><span className="text-xs font-bold text-[#b7ff39]">{c.budget}</span></div></button>)}</div></div><aside className="h-fit rounded-3xl border border-[#27303c] bg-[#0e1319] p-6 lg:sticky lg:top-6">{selected?<><p className="text-xs font-black tracking-[.3em] text-[#b7ff39]">CLUB SELECTED</p><div className="mt-6 grid h-28 place-items-center rounded-2xl bg-[#151a20]"><span className="text-4xl font-black" style={{color:selected.color}}>{selected.short}</span></div><h2 className="mt-5 text-2xl font-black">{selected.name}</h2><p className="mt-1 text-sm text-[#77828e]">{selected.league}</p><div className="mt-6 space-y-3">{[["Club rating",selected.rating+" / 100"],["Transfer budget",selected.budget],["Challenge",selected.level]].map(x=><div key={x[0]} className="flex justify-between border-b border-[#27303c] pb-3 text-sm"><span className="text-[#6f7a86]">{x[0]}</span><b>{x[1]}</b></div>)}</div><button onClick={onStart} className="mt-6 w-full rounded-xl bg-[#b7ff39] py-4 font-black text-black">START CAREER</button></>:<div className="py-16 text-center"><div className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-dashed border-[#46515c] text-2xl">+</div><p className="mt-5 font-bold">Select a club</p><p className="mt-1 text-xs text-[#68737f]">Your career begins here.</p></div>}</aside></div></div></Shell>;
+}
+
+function CareerPreview({ manager, club, difficulty, onMenu }: { manager:string; club:Club; difficulty:string; onMenu:()=>void }) {
+  return <Shell><div className="min-h-screen bg-[radial-gradient(circle_at_70%_15%,rgba(183,255,57,.12),transparent_24%)]"><header className="border-b border-[#27303c] px-6 py-5"><div className="mx-auto flex max-w-7xl items-center justify-between"><div className="flex items-center gap-3"><div className="grid h-10 w-10 place-items-center rounded-lg bg-[#b7ff39] font-black text-black">FC</div><span className="text-xs font-black tracking-[.3em]">CAREER MODE</span></div><button onClick={onMenu} className="text-xs font-bold text-[#707b87] hover:text-white">MAIN MENU</button></div></header><div className="mx-auto max-w-7xl px-6 py-10"><div className="flex flex-col justify-between gap-6 md:flex-row md:items-end"><div><p className="text-xs font-black tracking-[.3em] text-[#b7ff39]">WELCOME TO YOUR CAREER</p><h1 className="mt-2 text-5xl font-black tracking-tight">{club.name}</h1><p className="mt-2 text-[#7f8995]">Manager {manager} · {club.league} · {difficulty}</p></div><div className="rounded-xl border border-[#27303c] bg-[#10161d] px-6 py-4"><p className="text-[10px] font-black tracking-widest text-[#707b87]">SEASON</p><p className="text-2xl font-black">2026 / 27</p></div></div><div className="mt-8 grid gap-5 md:grid-cols-3"><Panel title="TRANSFER BUDGET" value={club.budget} sub="Available to spend"/><Panel title="SQUAD RATING" value={club.rating.toString()} sub="Current team strength"/><Panel title="BOARD EXPECTATION" value="TOP 4" sub="Your first objective"/></div><div className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_.8fr]"><div className="rounded-3xl border border-[#27303c] bg-[#0e1319] p-7"><p className="text-xs font-black tracking-[.25em] text-[#707b87]">FIRST WEEK</p><h2 className="mt-2 text-2xl font-black">Your journey starts now.</h2><div className="mt-7 grid gap-3 sm:grid-cols-2">{["Review the squad","Set your formation","Scout transfer targets","Meet the board"].map((x,i)=><div key={x} className="flex items-center gap-4 rounded-xl bg-[#151b22] p-4"><span className="grid h-9 w-9 place-items-center rounded-lg bg-[#1e272f] text-xs font-black text-[#b7ff39]">0{i+1}</span><span className="font-bold">{x}</span></div>)}</div><button className="mt-7 w-full rounded-xl bg-[#b7ff39] py-4 font-black text-black">ENTER CAREER HUB →</button></div><div className="rounded-3xl border border-[#27303c] bg-[#11171e] p-7"><p className="text-xs font-black tracking-[.25em] text-[#707b87]">MANAGER OBJECTIVES</p><div className="mt-6 space-y-5">{[["League", "Finish in top 4"],["Domestic Cup","Reach quarter-finals"],["Transfers","Keep wage budget healthy"]].map(x=><div key={x[0]}><div className="flex justify-between text-sm"><span className="text-[#7f8995]">{x[0]}</span><b>{x[1]}</b></div><div className="mt-2 h-1.5 rounded-full bg-[#252e37]"><div className="h-full w-[8%] rounded-full bg-[#b7ff39]"/></div></div>)}</div></div></div></div></div></Shell>;
+}
+
+function TopBar({step,title,onBack}:{step:string;title:string;onBack:()=>void}) { return <header className="flex items-center justify-between border-b border-[#27303c] pb-5"><button onClick={onBack} className="text-sm font-bold text-[#78838f] hover:text-white">← BACK</button><div className="text-center"><p className="text-[10px] font-black tracking-[.35em] text-[#b7ff39]">{step}</p><p className="mt-1 text-xs font-black tracking-[.2em]">{title}</p></div><div className="w-16"/></header>; }
+function Field({label,children}:{label:string;children:React.ReactNode}) { return <label className="block"><span className="mb-2 block text-[10px] font-black tracking-[.25em] text-[#707b87]">{label}</span>{children}</label>; }
+function Panel({title,value,sub}:{title:string;value:string;sub:string}) { return <div className="rounded-2xl border border-[#27303c] bg-[#0e1319] p-6"><p className="text-[10px] font-black tracking-[.25em] text-[#707b87]">{title}</p><p className="mt-4 text-4xl font-black text-[#b7ff39]">{value}</p><p className="mt-1 text-xs text-[#68737f]">{sub}</p></div>; }
